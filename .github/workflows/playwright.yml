@@ -1,0 +1,92 @@
+name: Playwright UI and API
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: playwright-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    name: TypeScript
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { id: api, name: API, project: api, browser: '', shard: '1/1' }
+          - { id: chromium-1, name: 'Chromium (1/2)', project: chromium, browser: chromium, shard: '1/2' }
+          - { id: chromium-2, name: 'Chromium (2/2)', project: chromium, browser: chromium, shard: '2/2' }
+          - { id: firefox, name: Firefox, project: firefox, browser: firefox, shard: '1/1' }
+          - { id: webkit, name: WebKit, project: webkit, browser: webkit, shard: '1/1' }
+    env:
+      CI: 'true'
+      PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.id }}.zip
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Install the browser and system dependencies
+        if: matrix.browser != ''
+        run: npx playwright install --with-deps "${{ matrix.browser }}"
+      - name: Run Playwright
+        run: npx playwright test --project="${{ matrix.project }}" --shard="${{ matrix.shard }}"
+      - name: Upload the Playwright blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-blob-${{ matrix.id }}
+          path: blob-report/
+          retention-days: 7
+          if-no-files-found: warn
+
+  report:
+    name: Publish combined HTML report
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    needs: [test]
+    if: ${{ !cancelled() }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: playwright-blob-*
+          path: all-blob-reports
+          merge-multiple: true
+      - run: npx playwright merge-reports --reporter=html ./all-blob-reports
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: error

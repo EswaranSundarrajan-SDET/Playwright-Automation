@@ -1,0 +1,55 @@
+import { test as base, expect } from './api';
+import {
+  AutocompletePage, CheckboxesPage, DropdownPage, FormValidationPage,
+  InputsPage, LoginPage, RadioButtonsPage,
+} from '../pages/forms';
+import {
+  DialogsPage, DragAndDropPage, HoverPage, KeyboardPage, SliderPage, TooltipPage,
+} from '../pages/interactions';
+import {
+  DownloadPage, FramesPage, ShadowDomPage, UploadPage, WindowsPage,
+} from '../pages/browser-controls';
+import {
+  DynamicControlsPage, DynamicLoadingPage, DynamicTablePage, PaginationPage, SortableTablePage,
+} from '../pages/dynamic-content';
+import { NotesPage } from '../pages/notes-page';
+
+const pages = {
+  autocomplete: AutocompletePage,
+  checkboxes: CheckboxesPage,
+  dialogs: DialogsPage,
+  download: DownloadPage,
+  drag: DragAndDropPage,
+  dropdown: DropdownPage,
+  dynamic: DynamicControlsPage,
+  dynamicTable: DynamicTablePage,
+  form: FormValidationPage,
+  frames: FramesPage,
+  hover: HoverPage,
+  inputs: InputsPage,
+  keyboard: KeyboardPage,
+  loading: DynamicLoadingPage,
+  login: LoginPage,
+  notes: NotesPage,
+  pagination: PaginationPage,
+  radios: RadioButtonsPage,
+  shadow: ShadowDomPage,
+  slider: SliderPage,
+  sortable: SortableTablePage,
+  tooltip: TooltipPage,
+  upload: UploadPage,
+  windows: WindowsPage,
+};
+
+type PageObjects = { [Name in keyof typeof pages]: InstanceType<(typeof pages)[Name]> };
+
+export const test = base.extend<{ ui: PageObjects }>({
+  ui: async ({ page }, use) => {
+    const objects = Object.fromEntries(
+      Object.entries(pages).map(([name, PageObject]) => [name, new PageObject(page)]),
+    ) as PageObjects;
+    await use(objects);
+  },
+});
+
+export { expect };
