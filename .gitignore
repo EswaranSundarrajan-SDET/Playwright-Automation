@@ -1,5 +1,8 @@
+# npm installs these dependencies from package-lock.json.
 node_modules/
+# Playwright generates reports and failure evidence when tests run.
 playwright-report/
 blob-report/
 test-results/
+# Keep machine-specific environment settings out of Git.
 .env

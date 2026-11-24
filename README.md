@@ -51,6 +51,14 @@ Install just Chromium with `npx playwright install chromium` when running only t
 
 Each UI test gets a fresh browser context. The UI fixture blocks third-party ad requests so ad overlays do not intercept the demo controls. Tests that write Notes data register a unique account and delete it during fixture teardown. Upload names are unique, and downloads use a test-specific output path. Web-first assertions wait for state changes without fixed sleeps.
 
+## Reading a test
+
+- For a UI example, open `tests/ui/forms.spec.ts` and follow `ui.login` to `src/pages/forms.ts`. The page object finds controls and performs actions. The spec checks what happened.
+- For an API example, open `tests/api/notes.spec.ts`. The `notesApi` fixture opens an HTTP request context. The `notesAccount` fixture builds on that client to register and sign in a demo user, then tries to delete the user after the test.
+- For a test that uses both, open `tests/ui/notes.spec.ts`. It uses the same demo user for API requests and browser actions, so it can check the data in both places.
+
+`package.json` lists the commands and dependencies. `package-lock.json` records the exact versions installed by `npm ci`. `tsconfig.json` controls how TypeScript checks the code.
+
 ## GitHub Actions
 
 The workflow runs on pushes and pull requests targeting `main`, and can also run on demand. The five test jobs start independently. Chromium runs in two shards, while Firefox, WebKit, and API each run in their own job. Each job uses one Playwright worker, with one retry available on CI.

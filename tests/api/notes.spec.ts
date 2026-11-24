@@ -2,6 +2,7 @@ import type { Note, NoteDraft, Profile } from '../../src/api/notes-client';
 import { expectData, expectJson } from '../../src/api/response';
 import { expect, test } from '../../src/fixtures/api';
 
+// Use the same valid note fields as a starting point for the create and validation tests.
 const draft: NoteDraft = {
   title: 'Plan the regression run',
   description: 'Verify the browser and API suites.',
@@ -9,11 +10,13 @@ const draft: NoteDraft = {
 };
 
 test('Notes API reports a healthy service', async ({ notesApi }) => {
+  // The health endpoint is public, so this test only needs the anonymous client.
   const body = await expectJson(await notesApi.health(), 200);
   expect(body.message).toBe('Notes API is Running');
 });
 
 test('registration and login provide an authenticated profile', async ({ notesAccount }) => {
+  // Check that login and the protected profile endpoint both refer to the new account.
   const { account, session, client } = notesAccount;
   expect(session.email).toBe(account.email);
   const profile = await expectData<Profile>(await client.profile());
@@ -21,17 +24,20 @@ test('registration and login provide an authenticated profile', async ({ notesAc
 });
 
 test('incorrect credentials are rejected', async ({ notesApi, notesAccount }) => {
+  // Use a real test account with a wrong password to check the login error.
   const response = await notesApi.login({ ...notesAccount.account, password: 'Wrong-password-123' });
   const body = await expectJson(response, 401);
   expect(body.message).toMatch(/incorrect email address or password/i);
 });
 
 test('listing notes requires an access token', async ({ notesApi }) => {
+  // Use the client without a token to check that the endpoint returns 401 Unauthorized.
   const body = await expectJson(await notesApi.list(), 401);
   expect(body.message).toMatch(/token/i);
 });
 
 test('invalid note category returns a validation error', async ({ notesAccount }) => {
+  // Send a category outside the allowed list, then check for a validation error and an empty note list.
   const response = await notesAccount.client.create({ ...draft, category: 'Invalid' });
   const body = await expectJson(response, 400);
   expect(body.message).toMatch(/category/i);
@@ -41,10 +47,12 @@ test('invalid note category returns a validation error', async ({ notesAccount }
 test('create, list, retrieve, replace, complete and delete a note', async ({ notesAccount }) => {
   const { client } = notesAccount;
 
+  // Give each stage a name so it is easy to locate failures in the Playwright report.
   const note = await test.step('Create and retrieve the note', async () => {
     const created = await expectData<Note>(await client.create(draft));
     expect(created).toMatchObject({ ...draft, id: expect.any(String), completed: false });
 
+    // Check that the new note can be found in the list and by its own ID.
     const allNotes = await expectData<Note[]>(await client.list());
     expect(allNotes).toEqual([expect.objectContaining({ id: created.id, ...draft })]);
     expect(await expectData<Note>(await client.get(created.id))).toMatchObject(created);
@@ -56,12 +64,14 @@ test('create, list, retrieve, replace, complete and delete a note', async ({ not
     const replaced = await expectData<Note>(await client.replace(note.id, update));
     expect(replaced).toMatchObject({ ...update, id: note.id });
 
+    // Update only the completion flag and read the record again to check the saved result.
     const completed = await expectData<Note>(await client.setCompleted(note.id, true));
     expect(completed).toMatchObject({ ...update, id: note.id, completed: true });
     expect(await expectData<Note>(await client.get(note.id))).toMatchObject(completed);
   });
 
   await test.step('Delete the note and verify removal', async () => {
+    // Check the delete response and read the list again to confirm removal.
     await expectJson(await client.delete(note.id), 200);
     expect(await expectData<Note[]>(await client.list())).toEqual([]);
   });

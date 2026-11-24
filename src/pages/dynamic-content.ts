@@ -1,5 +1,6 @@
 import { PracticePage } from './practice-page';
 
+// The checkbox and text input change after a delay. The tests wait for their new states.
 export class DynamicControlsPage extends PracticePage {
   protected readonly path = '/dynamic-controls';
   readonly checkbox = this.page.getByRole('checkbox');
@@ -14,6 +15,7 @@ export class DynamicControlsPage extends PracticePage {
   }
 }
 
+// The greeting starts hidden. Clicking Start makes it visible after a delay.
 export class DynamicLoadingPage extends PracticePage {
   protected readonly path = '/dynamic-loading/1';
   readonly greeting = this.page.getByRole('heading', { name: 'Hello World!', exact: true });
@@ -23,6 +25,7 @@ export class DynamicLoadingPage extends PracticePage {
   }
 }
 
+// Find the Chrome row by its cell text because this demo changes the row order.
 export class DynamicTablePage extends PracticePage {
   protected readonly path = '/dynamic-table';
   private readonly table = this.page.getByRole('table');
@@ -31,12 +34,14 @@ export class DynamicTablePage extends PracticePage {
   });
   readonly chromeSummary = this.page.getByText(/^Chrome CPU:/);
 
+  // Read the current column headers so the CPU value can be found even when columns move.
   async cpuColumnIndex() {
     const headers = await this.table.getByRole('columnheader').allTextContents();
     return headers.findIndex((header) => header.trim() === 'CPU');
   }
 }
 
+// The demo shows two tables. Work with the first one and read the surnames in the displayed order.
 export class SortableTablePage extends PracticePage {
   protected readonly path = '/tables';
   private readonly table = this.page.locator('#table1');
@@ -47,10 +52,12 @@ export class SortableTablePage extends PracticePage {
   }
 }
 
+// Change the row count and advance to the next set of records.
 export class PaginationPage extends PracticePage {
   protected readonly path = '/dynamic-pagination-table';
   readonly rows = this.page.getByRole('table').locator('tbody tr');
   private readonly pageSize = this.page.getByRole('combobox');
+  // The Next control can be marked up as a button or a link. Match either role by name.
   private readonly next = this.page.getByRole('button', { name: 'Next', exact: true })
     .or(this.page.getByRole('link', { name: 'Next', exact: true }));
 

@@ -1,3 +1,4 @@
+// Start with the API fixtures so a browser test can also ask for an API client or a demo account.
 import { test as base, expect } from './api';
 import {
   AutocompletePage, CheckboxesPage, DropdownPage, FormValidationPage,
@@ -14,6 +15,7 @@ import {
 } from '../pages/dynamic-content';
 import { NotesPage } from '../pages/notes-page';
 
+// These names are the keys used in tests. For example, ui.login gives the test its LoginPage object.
 const pages = {
   autocomplete: AutocompletePage,
   checkboxes: CheckboxesPage,
@@ -43,8 +45,10 @@ const pages = {
   windows: WindowsPage,
 };
 
+// Keep each key linked to its page object type so editors can suggest the right actions.
 type PageObjects = { [Name in keyof typeof pages]: InstanceType<(typeof pages)[Name]> };
 
+// The ui fixture uses Playwright's fresh browser context and tab for the current test.
 export const test = base.extend<{ ui: PageObjects }>({
   ui: async ({ context, page }, use) => {
     // The public demo can place third-party ad overlays over the controls under test.
@@ -53,9 +57,11 @@ export const test = base.extend<{ ui: PageObjects }>({
       (route) => route.abort(),
     );
 
+    // Create the page objects with the same tab. Creating an object leaves the tab on its current page.
     const objects = Object.fromEntries(
       Object.entries(pages).map(([name, PageObject]) => [name, new PageObject(page)]),
     ) as PageObjects;
+    // Hand the page objects to the spec. Playwright closes the built-in tab and context after the test.
     await use(objects);
   },
 });

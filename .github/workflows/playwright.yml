@@ -1,5 +1,6 @@
 name: Playwright UI and API
 
+# Run on changes to main, pull requests targeting main, and manual runs from the Actions tab.
 on:
   push:
     branches: [main]
@@ -7,14 +8,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# The workflow needs to read the repository to check out the code.
 permissions:
   contents: read
 
+# Cancel an older run on the same branch or pull request when a newer run starts.
 concurrency:
   group: playwright-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Check the TypeScript code in a separate job.
   typecheck:
     name: TypeScript
     runs-on: ubuntu-24.04
@@ -28,12 +32,15 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
 
+  # GitHub starts one job for each row in the matrix.
   test:
     name: ${{ matrix.name }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
+      # Let the other test jobs finish when one job fails so their results are still available.
       fail-fast: false
+      # Chromium is split into two parts. Firefox, WebKit, and the API each run in one job.
       matrix:
         include:
           - { id: api, name: API, project: api, browser: '', shard: '1/1' }
@@ -43,6 +50,7 @@ jobs:
           - { id: webkit, name: WebKit, project: webkit, browser: webkit, shard: '1/1' }
     env:
       CI: 'true'
+      # Give each job its own report file name so the reports can be downloaded into one folder.
       PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.id }}.zip
     steps:
       - uses: actions/checkout@v6
@@ -51,11 +59,14 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      # Only browser jobs need a browser installation and its Linux dependencies.
       - name: Install the browser and system dependencies
         if: matrix.browser != ''
         run: npx playwright install --with-deps "${{ matrix.browser }}"
+      # Run the project and part of the test suite assigned to this job.
       - name: Run Playwright
         run: npx playwright test --project="${{ matrix.project }}" --shard="${{ matrix.shard }}"
+      # Upload the results even when tests fail so the final report can show the failure details.
       - name: Upload the Playwright blob report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
@@ -65,6 +76,7 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
 
+  # After the test jobs finish, collect their reports and publish one HTML report.
   report:
     name: Publish combined HTML report
     runs-on: ubuntu-24.04
@@ -78,6 +90,7 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      # Download only the test reports and place them together for Playwright to merge.
       - uses: actions/download-artifact@v8
         with:
           pattern: playwright-blob-*
