@@ -14,9 +14,9 @@ export class NotesPage extends PracticePage {
 
   async createNote(note: NoteDraft) {
     await this.addNote.click();
-    await this.page.getByLabel('Category', { exact: true }).selectOption(note.category);
-    await this.page.getByLabel('Title', { exact: true }).fill(note.title);
-    await this.page.getByLabel('Description', { exact: true }).fill(note.description);
+    await this.page.locator('select[name="category"]').selectOption(note.category);
+    await this.page.locator('input[name="title"]').fill(note.title);
+    await this.page.locator('textarea[name="description"]').fill(note.description);
     await this.page.getByTestId('note-submit').click();
   }
 
