@@ -49,7 +49,7 @@ Install just Chromium with `npx playwright install chromium` when running only t
 | `tests/api/` | Browser-free HTTP and data assertions |
 | `.github/workflows/playwright.yml` | Type check, parallel test jobs, and report publishing |
 
-Each UI test gets a fresh browser context. Tests that write Notes data register a unique account and delete it during fixture teardown. Upload names are unique, and downloads use a test-specific output path. Web-first assertions wait for state changes without fixed sleeps.
+Each UI test gets a fresh browser context. The UI fixture blocks third-party ad requests so ad overlays do not intercept the demo controls. Tests that write Notes data register a unique account and delete it during fixture teardown. Upload names are unique, and downloads use a test-specific output path. Web-first assertions wait for state changes without fixed sleeps.
 
 ## GitHub Actions
 

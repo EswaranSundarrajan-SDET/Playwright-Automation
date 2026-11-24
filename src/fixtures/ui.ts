@@ -46,7 +46,13 @@ const pages = {
 type PageObjects = { [Name in keyof typeof pages]: InstanceType<(typeof pages)[Name]> };
 
 export const test = base.extend<{ ui: PageObjects }>({
-  ui: async ({ page }, use) => {
+  ui: async ({ context, page }, use) => {
+    // The public demo can place third-party ad overlays over the controls under test.
+    await context.route(
+      (url) => /(?:^|\.)(?:googlesyndication\.com|doubleclick\.net|googleadservices\.com)$/.test(url.hostname),
+      (route) => route.abort(),
+    );
+
     const objects = Object.fromEntries(
       Object.entries(pages).map(([name, PageObject]) => [name, new PageObject(page)]),
     ) as PageObjects;
