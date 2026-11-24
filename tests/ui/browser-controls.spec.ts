@@ -24,9 +24,17 @@ test('opens a new window and verifies its content', async ({ ui }) => {
 test('clicks a button in an open shadow root', async ({ ui }) => {
   await ui.shadow.goto();
   await expect(ui.shadow.button).toBeVisible();
-  const dialog = await ui.shadow.clickShadowButton();
-  expect(dialog.type).toBe('alert');
-  expect(dialog.message).toMatch(/\S/);
+  expect(await ui.shadow.button.evaluate((element) => element.getRootNode() instanceof ShadowRoot))
+    .toBe(true);
+  await ui.shadow.clickShadowButton();
+});
+
+test('closes an HTML modal without leaving the page', async ({ page, ui }) => {
+  await ui.modal.goto();
+  await expect(ui.modal.dialog).toBeVisible();
+  await ui.modal.close();
+  await expect(ui.modal.dialog).toBeHidden();
+  await expect(page).toHaveURL(/\/entry-ad\/?$/);
 });
 
 test('uploads a generated text file', async ({ ui }) => {

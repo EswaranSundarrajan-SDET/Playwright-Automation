@@ -27,18 +27,20 @@ export class WindowsPage extends PracticePage {
 
 export class ShadowDomPage extends PracticePage {
   protected readonly path = '/shadowdom';
-  readonly button = this.page.getByRole('button', { name: "Here's a basic button example." });
+  readonly button = this.page.locator('#shadow-host')
+    .getByRole('button', { name: 'This button is inside a Shadow DOM.', exact: true });
 
   async clickShadowButton() {
-    const [dialog] = await Promise.all([
-      this.page.waitForEvent('dialog', { timeout: 12_000 }).then(async (message) => {
-        const details = { type: message.type(), message: message.message() };
-        await message.accept();
-        return details;
-      }),
-      this.button.click(),
-    ]);
-    return dialog;
+    await this.button.click();
+  }
+}
+
+export class ModalPage extends PracticePage {
+  protected readonly path = '/entry-ad';
+  readonly dialog = this.page.locator('#exampleModal');
+
+  async close() {
+    await this.dialog.getByRole('button', { name: 'Close', exact: true }).click();
   }
 }
 

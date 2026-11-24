@@ -44,10 +44,12 @@ test('text, password, number and date inputs display and clear values', async ({
 
 test('submitting an empty form shows required-field feedback', async ({ ui }) => {
   await ui.form.goto();
+  await ui.form.contactName.clear();
   await ui.form.submit();
   await expect(ui.form.nameError).toBeVisible();
   await expect(ui.form.phoneError).toBeVisible();
   await expect(ui.form.dateError).toBeVisible();
+  await expect(ui.form.paymentError).toBeVisible();
 });
 
 test('checkboxes can be checked and unchecked independently', async ({ ui }) => {
@@ -78,7 +80,7 @@ test('native dropdowns support selecting by label and value', async ({ ui }) => 
   await ui.dropdown.goto();
   await ui.dropdown.selectOptions();
   await expect(ui.dropdown.simple).toHaveValue('2');
-  await expect(ui.dropdown.pageSize).toHaveValue('5');
+  await expect(ui.dropdown.pageSize).toHaveValue('20');
   await expect(ui.dropdown.selectedCountry()).toHaveText('India');
 });
 

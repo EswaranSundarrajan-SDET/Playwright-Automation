@@ -2,9 +2,15 @@ import { expect, type APIResponse } from '@playwright/test';
 
 export async function expectJson(response: APIResponse, status: number) {
   const context = response.url();
-  expect(response.status(), context).toBe(status);
-  expect(response.headers()['content-type'], context).toContain('application/json');
-  const body: unknown = await response.json();
+  const contentType = response.headers()['content-type'];
+  const body: unknown = contentType?.includes('application/json')
+    ? await response.json()
+    : undefined;
+  const errorMessage = typeof body === 'object' && body !== null && 'message' in body
+    && typeof body.message === 'string' ? body.message : undefined;
+
+  expect(response.status(), [context, errorMessage].filter(Boolean).join(' — ')).toBe(status);
+  expect(contentType, context).toContain('application/json');
   expect(body, context).toMatchObject({
     success: status < 400,
     status,

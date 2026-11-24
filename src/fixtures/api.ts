@@ -24,7 +24,7 @@ export const test = base.extend<{ notesApi: NotesClient; notesAccount: NotesAcco
     }
   },
   notesAccount: async ({ notesApi }, use) => {
-    const id = randomUUID();
+    const id = randomUUID().replaceAll('-', '').slice(0, 20);
     const account: Account = {
       name: 'Playwright QA',
       email: `pw-${id}@example.com`,

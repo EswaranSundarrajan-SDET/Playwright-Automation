@@ -31,8 +31,8 @@ Install just Chromium with `npx playwright install chromium` when running only t
 | --- | --- |
 | Authentication and forms | Login, invalid password, logout, text, masked password, number, native date, display and clear, required-field messages |
 | Selection | Check and uncheck, radio grouping and disabled state, native selects by label and value, autocomplete suggestions |
-| Mouse and keyboard | Hover, tooltip, key presses, slider movement, drag and drop |
-| Browser controls | Alert acceptance, confirm accept and dismiss, prompt input, iframe, open Shadow DOM, popup/tab lifecycle |
+| Mouse and keyboard | Hover, tooltip, key presses, right-click, slider movement, drag and drop |
+| Browser controls | Alert acceptance, confirm accept and dismiss, prompt input, HTML modal, iframe, open Shadow DOM, popup/tab lifecycle |
 | Files | Upload a generated text file, download a built-in sample and verify its contents |
 | Dynamic controls and tables | Checkbox removal and restoration, input enable and disable, delayed visibility, dynamic row/column lookup, sorting, page size, next page |
 | Notes API | Health, registration, login, authenticated profile, invalid credentials, missing token, invalid category, create/list/read/replace/complete/delete |

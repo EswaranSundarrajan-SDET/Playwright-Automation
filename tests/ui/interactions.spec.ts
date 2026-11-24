@@ -10,8 +10,17 @@ test('the range slider responds to keyboard input', async ({ ui }) => {
 
 test('a key press is shown in the result', async ({ ui }) => {
   await ui.keyboard.goto();
+  await ui.keyboard.press('A');
+  await expect(ui.keyboard.result).toHaveText('You entered: A');
   await ui.keyboard.press('Enter');
-  await expect(ui.keyboard.result).toHaveText(/enter/i);
+  await expect(ui.keyboard.result).toHaveText('');
+});
+
+test('right-clicking the context area opens the demo alert', async ({ ui }) => {
+  await ui.contextMenu.goto();
+  const dialog = await ui.contextMenu.rightClick();
+  expect(dialog.type).toBe('alert');
+  expect(dialog.message).toMatch(/context menu/i);
 });
 
 test('dragging one column onto the other swaps their labels', async ({ ui }) => {

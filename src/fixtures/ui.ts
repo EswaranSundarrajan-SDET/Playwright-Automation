@@ -4,10 +4,10 @@ import {
   InputsPage, LoginPage, RadioButtonsPage,
 } from '../pages/forms';
 import {
-  DialogsPage, DragAndDropPage, HoverPage, KeyboardPage, SliderPage, TooltipPage,
+  ContextMenuPage, DialogsPage, DragAndDropPage, HoverPage, KeyboardPage, SliderPage, TooltipPage,
 } from '../pages/interactions';
 import {
-  DownloadPage, FramesPage, ShadowDomPage, UploadPage, WindowsPage,
+  DownloadPage, FramesPage, ModalPage, ShadowDomPage, UploadPage, WindowsPage,
 } from '../pages/browser-controls';
 import {
   DynamicControlsPage, DynamicLoadingPage, DynamicTablePage, PaginationPage, SortableTablePage,
@@ -17,6 +17,7 @@ import { NotesPage } from '../pages/notes-page';
 const pages = {
   autocomplete: AutocompletePage,
   checkboxes: CheckboxesPage,
+  contextMenu: ContextMenuPage,
   dialogs: DialogsPage,
   download: DownloadPage,
   drag: DragAndDropPage,
@@ -30,6 +31,7 @@ const pages = {
   keyboard: KeyboardPage,
   loading: DynamicLoadingPage,
   login: LoginPage,
+  modal: ModalPage,
   notes: NotesPage,
   pagination: PaginationPage,
   radios: RadioButtonsPage,

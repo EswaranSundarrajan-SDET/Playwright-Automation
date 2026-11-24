@@ -1,5 +1,36 @@
-import type { Dialog } from '@playwright/test';
+import type { Dialog, Page } from '@playwright/test';
 import { PracticePage } from './practice-page';
+
+async function captureDialog(
+  page: Page,
+  trigger: () => Promise<void>,
+  action: 'accept' | 'dismiss' = 'accept',
+  answer?: string,
+) {
+  const respond = async (dialog: Dialog) => {
+    const details = { type: dialog.type(), message: dialog.message() };
+    if (action === 'dismiss') {
+      await dialog.dismiss();
+    } else {
+      await dialog.accept(answer);
+    }
+    return details;
+  };
+  const [details] = await Promise.all([
+    page.waitForEvent('dialog', { timeout: 12_000 }).then(respond),
+    trigger(),
+  ]);
+  return details;
+}
+
+export class ContextMenuPage extends PracticePage {
+  protected readonly path = '/context-menu';
+  private readonly hotspot = this.page.locator('#hot-spot');
+
+  async rightClick() {
+    return captureDialog(this.page, () => this.hotspot.click({ button: 'right' }));
+  }
+}
 
 export class SliderPage extends PracticePage {
   protected readonly path = '/horizontal-slider';
@@ -55,19 +86,11 @@ export class DialogsPage extends PracticePage {
   readonly result = this.page.locator('#dialog-response, #result').filter({ visible: true });
 
   async respond(button: string, action: 'accept' | 'dismiss', answer?: string) {
-    const respond = async (dialog: Dialog) => {
-      const details = { type: dialog.type(), message: dialog.message() };
-      if (action === 'dismiss') {
-        await dialog.dismiss();
-      } else {
-        await dialog.accept(answer);
-      }
-      return details;
-    };
-    const [details] = await Promise.all([
-      this.page.waitForEvent('dialog', { timeout: 12_000 }).then(respond),
-      this.page.getByRole('button', { name: button, exact: true }).click(),
-    ]);
-    return details;
+    return captureDialog(
+      this.page,
+      () => this.page.getByRole('button', { name: button, exact: true }).click(),
+      action,
+      answer,
+    );
   }
 }

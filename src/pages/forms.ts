@@ -49,9 +49,11 @@ export class InputsPage extends PracticePage {
 
 export class FormValidationPage extends PracticePage {
   protected readonly path = '/form-validation';
+  readonly contactName = this.page.getByLabel('Contact Name', { exact: true });
   readonly nameError = this.page.getByText('Please enter your Contact name.', { exact: true });
   readonly phoneError = this.page.getByText('Please provide your Contact number.', { exact: true });
   readonly dateError = this.page.getByText('Please provide valid Date.', { exact: true });
+  readonly paymentError = this.page.getByText('Please select the Paymeny Method.', { exact: true });
 
   async submit() {
     await this.page.getByRole('button', { name: 'Register', exact: true }).click();
@@ -68,7 +70,7 @@ export class RadioButtonsPage extends PracticePage {
   protected readonly path = '/radio-buttons';
   readonly blue = this.page.getByRole('radio', { name: 'Blue', exact: true });
   readonly red = this.page.getByRole('radio', { name: 'Red', exact: true });
-  readonly green = this.page.getByRole('radio', { name: 'Green', exact: true });
+  readonly green = this.page.locator('input#green');
   readonly tennis = this.page.getByRole('radio', { name: 'Tennis', exact: true });
 }
 
@@ -80,7 +82,7 @@ export class DropdownPage extends PracticePage {
 
   async selectOptions() {
     await this.simple.selectOption({ label: 'Option 2' });
-    await this.pageSize.selectOption('5');
+    await this.pageSize.selectOption('20');
     await this.country.selectOption({ label: 'India' });
   }
 
