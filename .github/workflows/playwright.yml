@@ -6,7 +6,8 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # This Ubuntu version supports the browsers in package-lock.json.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       # Keep the remaining jobs running if one browser fails.
@@ -15,8 +16,8 @@ jobs:
         project: [api, chromium, firefox, webkit]
     name: ${{ matrix.project }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: npm
@@ -31,7 +32,7 @@ jobs:
         run: npx playwright test --project=${{ matrix.project }}
       - name: Save the HTML report and any failure traces
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: report-${{ matrix.project }}
           path: playwright-report/
