@@ -1,0 +1,38 @@
+name: Playwright checks
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      # Keep the remaining jobs running if one browser fails.
+      fail-fast: false
+      matrix:
+        project: [api, chromium, firefox, webkit]
+    name: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Check TypeScript
+        if: matrix.project == 'api'
+        run: npm run typecheck
+      - name: Install the browser for this job
+        if: matrix.project != 'api'
+        run: npx playwright install --with-deps ${{ matrix.project }}
+      - name: Run this group of tests
+        run: npx playwright test --project=${{ matrix.project }}
+      - name: Save the HTML report and any failure traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 7
