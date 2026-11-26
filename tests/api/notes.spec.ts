@@ -49,7 +49,7 @@ test('create, list, retrieve, replace, complete and delete a note', async ({ not
     // Check that the new note can be found in the list and by its own ID.
     const allNotes = await expectData<Note[]>(await client.list());
     expect(allNotes).toEqual([expect.objectContaining({ id: created.id, ...apiNoteDraft })]);
-    expect(await expectData<Note>(await client.get(created.id))).toMatchObject(created);
+    expect(await expectData<Note>(await client.get(created.id))).toMatchObject({ ...created });
     return created;
   });
 
@@ -61,7 +61,7 @@ test('create, list, retrieve, replace, complete and delete a note', async ({ not
     // Update only the completion flag and read the record again to check the saved result.
     const completed = await expectData<Note>(await client.setCompleted(note.id, true));
     expect(completed).toMatchObject({ ...update, id: note.id, completed: true });
-    expect(await expectData<Note>(await client.get(note.id))).toMatchObject(completed);
+    expect(await expectData<Note>(await client.get(note.id))).toMatchObject({ ...completed });
   });
 
   await test.step('Delete the note and verify removal', async () => {
