@@ -1,15 +1,17 @@
-import type { Credentials, NoteDraft } from '../test-data/notes.types';
-import { PracticePage } from './practice-page';
+import type { Credentials, NoteDraft } from '../../test-data/expandtesting/notes.types';
+import { BasePage } from '../base-page';
 
 // The Notes app has its own login and note creation form. The hybrid spec uses this page object.
-export class NotesPage extends PracticePage {
+export class NotesPage extends BasePage {
   protected readonly path = '/notes/app/login';
   readonly addNote = this.page.getByRole('button', { name: '+ Add Note', exact: true });
 
   // Sign in with the demo account from the API fixture.
   async login({ email, password }: Credentials) {
-    await this.page.getByTestId('login-email').fill(email);
-    await this.page.getByTestId('login-password').fill(password);
+    await this.fillFields([
+      [this.page.getByTestId('login-email'), email],
+      [this.page.getByTestId('login-password'), password],
+    ]);
     await this.page.getByRole('button', { name: 'Login', exact: true }).click();
     // Wait for the Add Note button to show that the notes screen is ready.
     await this.addNote.waitFor();
@@ -20,8 +22,10 @@ export class NotesPage extends PracticePage {
     await this.addNote.click();
     // Use the stable name attributes to find the three form fields.
     await this.page.locator('select[name="category"]').selectOption(note.category);
-    await this.page.locator('input[name="title"]').fill(note.title);
-    await this.page.locator('textarea[name="description"]').fill(note.description);
+    await this.fillFields([
+      [this.page.locator('input[name="title"]'), note.title],
+      [this.page.locator('textarea[name="description"]'), note.description],
+    ]);
     await this.page.getByTestId('note-submit').click();
   }
 

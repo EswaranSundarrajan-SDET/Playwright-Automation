@@ -40,17 +40,17 @@ Install just Chromium with `npx playwright install chromium` when running only t
 
 ## Framework structure
 
-The repository root is the Playwright framework folder.
+The repository root is the Playwright framework folder. The shared classes can be used with other web apps and APIs. The `expandtesting` modules show how to use them with a real UI and REST API.
 
 | Location | Responsibility |
 | --- | --- |
 | `tests/` | UI, API, and hybrid test specifications |
-| `pages/` | Page Object classes that find controls and perform actions |
-| `fixtures/` | Custom fixtures that set up pages, request clients, and demo accounts |
+| `pages/` | Shared `BasePage` and the ExpandTesting Page Objects |
+| `fixtures/` | Shared Playwright fixtures and demo setup for page objects and test accounts |
 | `utils/` | Shared helpers for browser dialogs and API response checks |
-| `test-data/` | Demo inputs, Notes payloads, and TypeScript interfaces |
-| `api/` | Notes API client and request methods |
-| `config/` | Environment settings for the UI and API addresses |
+| `test-data/` | Application-specific inputs, payloads, and TypeScript interfaces |
+| `api/` | Shared HTTP client and the ExpandTesting Notes endpoints and response checks |
+| `config/` | Shared environment loader and application-specific default addresses |
 | `playwright.config.ts` | Test projects, parallel execution, timeouts, and reports |
 | `package.json` | Dependencies and commands for running the framework |
 | `.github/workflows/playwright.yml` | Type check, parallel test jobs, and report publishing |
@@ -59,11 +59,18 @@ Each UI test gets a fresh browser context. The UI fixture blocks third-party ad 
 
 ## Reading a test
 
-- For a UI example, open `tests/ui/forms.spec.ts` and follow `ui.login` to `pages/forms.ts`. The page object finds controls and performs actions. The spec checks what happened.
+- For a UI example, open `tests/ui/forms.spec.ts` and follow `ui.login` to `pages/expandtesting/forms.ts`. The page object finds controls and performs actions. The spec checks what happened.
 - For an API example, open `tests/api/notes.spec.ts`. The `notesApi` fixture opens an HTTP request context. The `notesAccount` fixture builds on that client to register and sign in a demo user, then tries to delete the user after the test.
 - For a test that uses both, open `tests/ui/notes.spec.ts`. It uses the same demo user for API requests and browser actions, so it can check the data in both places.
 
 `package.json` lists the commands and dependencies. `package-lock.json` records the exact versions installed by `npm ci`. `tsconfig.json` controls how TypeScript checks the code.
+
+## Use the framework with another application
+
+1. Set the application's default UI and API addresses in a file under `config/`. Import those settings in `playwright.config.ts`. The browser uses `baseURL` and the shared HTTP fixture uses `apiBaseURL`.
+2. Add application page classes under `pages/` and extend `BasePage`. Each class sets its page path and defines its own locators and actions. Use the shared `goto()` and `fillFields()` methods as needed.
+3. Import `test` from `fixtures/base.ts`. Use Playwright's `page` fixture for UI tests and ask for `apiClient` for HTTP tests. Add an application fixture when several tests need the same setup or cleanup.
+4. Put endpoint methods under `api/` and payloads under `test-data/`. Use `apiClient.request()` to send requests and `expectJson()` from `utils/response.ts` to check JSON responses. Keep checks for the application's own response fields close to its API client.
 
 ## GitHub Actions
 

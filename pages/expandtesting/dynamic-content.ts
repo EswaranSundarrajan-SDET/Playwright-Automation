@@ -1,7 +1,7 @@
-import { PracticePage } from './practice-page';
+import { BasePage } from '../base-page';
 
 // The checkbox and text input change after a delay. The tests wait for their new states.
-export class DynamicControlsPage extends PracticePage {
+export class DynamicControlsPage extends BasePage {
   protected readonly path = '/dynamic-controls';
   readonly checkbox = this.page.getByRole('checkbox');
   readonly text = this.page.getByRole('textbox');
@@ -16,7 +16,7 @@ export class DynamicControlsPage extends PracticePage {
 }
 
 // The greeting starts hidden. Clicking Start makes it visible after a delay.
-export class DynamicLoadingPage extends PracticePage {
+export class DynamicLoadingPage extends BasePage {
   protected readonly path = '/dynamic-loading/1';
   readonly greeting = this.page.getByRole('heading', { name: 'Hello World!', exact: true });
 
@@ -26,7 +26,7 @@ export class DynamicLoadingPage extends PracticePage {
 }
 
 // Find the Chrome row by its cell text because this demo changes the row order.
-export class DynamicTablePage extends PracticePage {
+export class DynamicTablePage extends BasePage {
   protected readonly path = '/dynamic-table';
   private readonly table = this.page.getByRole('table');
   readonly chromeRow = this.table.getByRole('row').filter({
@@ -42,7 +42,7 @@ export class DynamicTablePage extends PracticePage {
 }
 
 // The demo shows two tables. Work with the first one and read the surnames in the displayed order.
-export class SortableTablePage extends PracticePage {
+export class SortableTablePage extends BasePage {
   protected readonly path = '/tables';
   private readonly table = this.page.locator('#table1');
   readonly lastNames = this.table.locator('tbody tr td:first-child');
@@ -53,7 +53,7 @@ export class SortableTablePage extends PracticePage {
 }
 
 // Change the row count and advance to the next set of records.
-export class PaginationPage extends PracticePage {
+export class PaginationPage extends BasePage {
   protected readonly path = '/dynamic-pagination-table';
   readonly rows = this.page.getByRole('table').locator('tbody tr');
   private readonly pageSize = this.page.getByRole('combobox');

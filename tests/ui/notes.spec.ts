@@ -1,13 +1,13 @@
-import { expect, test } from '../../fixtures/ui';
-import { browserNote, seededNote } from '../../test-data/notes.data';
-import type { Note } from '../../test-data/notes.types';
-import { expectData } from '../../utils/response';
+import { expectNotesData } from '../../api/expandtesting/notes-response';
+import { expect, test } from '../../fixtures/expandtesting/ui';
+import { browserNote, seededNote } from '../../test-data/expandtesting/notes.data';
+import type { Note } from '../../test-data/expandtesting/notes.types';
 
 test('API-seeded notes appear in the UI and UI-created notes persist to the API', async ({
   ui, notesAccount,
 }) => {
   // Create a starting note through the API with the temporary user's account.
-  await expectData<Note>(await notesAccount.client.create(seededNote));
+  await expectNotesData<Note>(await notesAccount.client.create(seededNote));
 
   await ui.notes.goto();
   // Sign in as the same user so the browser can see the note created by the API.
@@ -19,7 +19,7 @@ test('API-seeded notes appear in the UI and UI-created notes persist to the API'
   await expect(ui.notes.title(browserNote.title)).toBeVisible();
 
   // Read the notes from the API to confirm the browser action saved the second note.
-  const saved = await expectData<Note[]>(await notesAccount.client.list());
+  const saved = await expectNotesData<Note[]>(await notesAccount.client.list());
   expect(saved).toEqual(expect.arrayContaining([
     expect.objectContaining({ ...browserNote, completed: false }),
   ]));

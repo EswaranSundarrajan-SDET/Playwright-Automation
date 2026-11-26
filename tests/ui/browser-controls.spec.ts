@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { expect, test } from '../../fixtures/ui';
+import { expect, test } from '../../fixtures/expandtesting/ui';
 
 test('interacts with an email field inside an iframe', async ({ ui }) => {
   await ui.frames.goto();

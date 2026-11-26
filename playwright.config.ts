@@ -1,11 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { uiBaseURL } from './config/environment';
+import { apiBaseURL, uiBaseURL } from './config/expandtesting';
+import type { FrameworkOptions } from './fixtures/base';
 
 // GitHub Actions sets CI. Use it to choose the runner settings and report format.
 const ci = Boolean(process.env.CI);
 
-export default defineConfig({
+export default defineConfig<FrameworkOptions>({
   // Look for tests under this folder. Each project below chooses which spec files to run.
   testDir: './tests',
   // Allow individual tests in a file to run in parallel and be split across CI jobs.
@@ -24,6 +25,7 @@ export default defineConfig({
   // Share the site address, browser time limits, and failure evidence settings across projects.
   use: {
     baseURL: uiBaseURL,
+    apiBaseURL,
     actionTimeout: 12_000,
     navigationTimeout: 20_000,
     screenshot: 'only-on-failure',

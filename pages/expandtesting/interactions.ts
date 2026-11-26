@@ -1,8 +1,8 @@
-import { captureDialog } from '../utils/dialog';
-import { PracticePage } from './practice-page';
+import { captureDialog } from '../../utils/dialog';
+import { BasePage } from '../base-page';
 
 // This demo opens a browser alert when the marked area is right-clicked.
-export class ContextMenuPage extends PracticePage {
+export class ContextMenuPage extends BasePage {
   protected readonly path = '/context-menu';
   private readonly hotspot = this.page.locator('#hot-spot');
 
@@ -12,7 +12,7 @@ export class ContextMenuPage extends PracticePage {
 }
 
 // The page shows both the slider's own value and a separate text value next to it.
-export class SliderPage extends PracticePage {
+export class SliderPage extends BasePage {
   protected readonly path = '/horizontal-slider';
   readonly slider = this.page.getByRole('slider');
   readonly value = this.page.locator('#range');
@@ -24,7 +24,7 @@ export class SliderPage extends PracticePage {
 }
 
 // Send keys to the input and read the result that the page shows below it.
-export class KeyboardPage extends PracticePage {
+export class KeyboardPage extends BasePage {
   protected readonly path = '/key-presses';
   readonly input = this.page.getByRole('textbox');
   readonly result = this.page.locator('#result');
@@ -35,7 +35,7 @@ export class KeyboardPage extends PracticePage {
 }
 
 // Drag the left column onto the right column. The test checks how their labels change.
-export class DragAndDropPage extends PracticePage {
+export class DragAndDropPage extends BasePage {
   protected readonly path = '/drag-and-drop';
   readonly left = this.page.locator('#column-a');
   readonly right = this.page.locator('#column-b');
@@ -46,7 +46,7 @@ export class DragAndDropPage extends PracticePage {
 }
 
 // Work inside the first user's card so the View profile link comes from the right card.
-export class HoverPage extends PracticePage {
+export class HoverPage extends BasePage {
   protected readonly path = '/hovers';
   private readonly firstCard = this.page.locator('.figure').filter({ hasText: 'name: user1' });
   readonly profile = this.firstCard.getByRole('link', { name: 'View profile' });
@@ -57,7 +57,7 @@ export class HoverPage extends PracticePage {
 }
 
 // Move the pointer onto the button that shows its tooltip above it.
-export class TooltipPage extends PracticePage {
+export class TooltipPage extends BasePage {
   protected readonly path = '/tooltips';
   readonly tooltip = this.page.getByRole('tooltip');
 
@@ -67,7 +67,7 @@ export class TooltipPage extends PracticePage {
 }
 
 // Use the same dialog handler for the alert, confirm box, and prompt buttons.
-export class DialogsPage extends PracticePage {
+export class DialogsPage extends BasePage {
   protected readonly path = '/js-dialogs';
   readonly result = this.page.locator('#dialog-response, #result').filter({ visible: true });
 

@@ -1,8 +1,8 @@
-import type { InputValues } from '../test-data/forms.data';
-import { PracticePage } from './practice-page';
+import type { InputValues } from '../../test-data/expandtesting/forms.data';
+import { BasePage } from '../base-page';
 
 // The practice login page has fields for both successful and unsuccessful sign-in tests.
-export class LoginPage extends PracticePage {
+export class LoginPage extends BasePage {
   protected readonly path = '/login';
   readonly username = this.page.getByLabel('Username', { exact: true });
   readonly password = this.page.getByLabel('Password', { exact: true });
@@ -11,8 +11,10 @@ export class LoginPage extends PracticePage {
 
   // Fill both fields and submit the form. The test checks the outcome.
   async login(username: string, password: string) {
-    await this.username.fill(username);
-    await this.password.fill(password);
+    await this.fillFields([
+      [this.username, username],
+      [this.password, password],
+    ]);
     await this.page.getByRole('button', { name: 'Login', exact: true }).click();
   }
 
@@ -22,7 +24,7 @@ export class LoginPage extends PracticePage {
 }
 
 // The input page has number, text, password, and date fields with a separate area for displayed values.
-export class InputsPage extends PracticePage {
+export class InputsPage extends BasePage {
   protected readonly path = '/inputs';
   readonly number = this.page.getByLabel('Input: Number');
   readonly text = this.page.getByLabel('Input: Text');
@@ -30,11 +32,13 @@ export class InputsPage extends PracticePage {
   readonly date = this.page.getByLabel('Input: Date');
 
   async enter(values: InputValues) {
-    await this.number.fill(values.number);
-    await this.text.fill(values.text);
-    await this.password.fill(values.password);
-    // Playwright fills a native date field with a string in YYYY-MM-DD format.
-    await this.date.fill(values.date);
+    await this.fillFields([
+      [this.number, values.number],
+      [this.text, values.text],
+      [this.password, values.password],
+      // Playwright fills a native date field with a string in YYYY-MM-DD format.
+      [this.date, values.date],
+    ]);
   }
 
   // The page uses the field name as part of each output element's ID.
@@ -52,7 +56,7 @@ export class InputsPage extends PracticePage {
 }
 
 // Expose the warning beside each required field so the test can check what the user sees.
-export class FormValidationPage extends PracticePage {
+export class FormValidationPage extends BasePage {
   protected readonly path = '/form-validation';
   readonly contactName = this.page.getByLabel('Contact Name', { exact: true });
   readonly nameError = this.page.getByText('Please enter your Contact name.', { exact: true });
@@ -66,14 +70,14 @@ export class FormValidationPage extends PracticePage {
 }
 
 // Use each checkbox's visible name to find it. The tests can check and uncheck the boxes separately.
-export class CheckboxesPage extends PracticePage {
+export class CheckboxesPage extends BasePage {
   protected readonly path = '/checkboxes';
   readonly first = this.page.getByRole('checkbox', { name: 'Checkbox 1', exact: true });
   readonly second = this.page.getByRole('checkbox', { name: 'Checkbox 2', exact: true });
 }
 
 // The demo has separate color and sport groups.
-export class RadioButtonsPage extends PracticePage {
+export class RadioButtonsPage extends BasePage {
   protected readonly path = '/radio-buttons';
   readonly blue = this.page.getByRole('radio', { name: 'Blue', exact: true });
   readonly red = this.page.getByRole('radio', { name: 'Red', exact: true });
@@ -83,7 +87,7 @@ export class RadioButtonsPage extends PracticePage {
 }
 
 // These controls are HTML select elements, so Playwright can choose an option directly.
-export class DropdownPage extends PracticePage {
+export class DropdownPage extends BasePage {
   protected readonly path = '/dropdown';
   readonly simple = this.page.locator('#dropdown');
   readonly pageSize = this.page.getByLabel('Elements per Page:');
@@ -103,7 +107,7 @@ export class DropdownPage extends PracticePage {
 }
 
 // Type part of a country name, then click the matching suggestion when it appears.
-export class AutocompletePage extends PracticePage {
+export class AutocompletePage extends BasePage {
   protected readonly path = '/autocomplete';
   readonly country = this.page.getByPlaceholder('Country name');
 

@@ -1,5 +1,5 @@
-import { expect, test } from '../../fixtures/ui';
-import { practiceInputs, practiceLogin } from '../../test-data/forms.data';
+import { expect, test } from '../../fixtures/expandtesting/ui';
+import { practiceInputs, practiceLogin } from '../../test-data/expandtesting/forms.data';
 
 test('valid credentials open the secure area and logout returns to login', async ({ page, ui }) => {
   await ui.login.goto();

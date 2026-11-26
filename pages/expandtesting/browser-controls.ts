@@ -1,7 +1,7 @@
-import { PracticePage } from './practice-page';
+import { BasePage } from '../base-page';
 
 // An iframe is a page inside another page. Find the subscription input and button inside the frame.
-export class FramesPage extends PracticePage {
+export class FramesPage extends BasePage {
   protected readonly path = '/iframe';
   private readonly subscription = this.page.frameLocator('iframe[src*="iframe-email-subscribe"]');
   readonly email = this.subscription.getByRole('textbox');
@@ -15,7 +15,7 @@ export class FramesPage extends PracticePage {
 }
 
 // The link opens a separate tab or window, which Playwright gives back as another Page object.
-export class WindowsPage extends PracticePage {
+export class WindowsPage extends BasePage {
   protected readonly path = '/windows';
 
   async openNewWindow() {
@@ -29,7 +29,7 @@ export class WindowsPage extends PracticePage {
 }
 
 // The button is inside an open shadow root. Playwright can find it by role from the host element.
-export class ShadowDomPage extends PracticePage {
+export class ShadowDomPage extends BasePage {
   protected readonly path = '/shadowdom';
   readonly button = this.page.locator('#shadow-host')
     .getByRole('button', { name: 'This button is inside a Shadow DOM.', exact: true });
@@ -40,7 +40,7 @@ export class ShadowDomPage extends PracticePage {
 }
 
 // The HTML modal is part of the current page. Use the Close button within that modal.
-export class ModalPage extends PracticePage {
+export class ModalPage extends BasePage {
   protected readonly path = '/entry-ad';
   readonly dialog = this.page.locator('#exampleModal');
 
@@ -50,7 +50,7 @@ export class ModalPage extends PracticePage {
 }
 
 // Use a generated text file so every test can upload a file with its own name.
-export class UploadPage extends PracticePage {
+export class UploadPage extends BasePage {
   protected readonly path = '/upload';
   readonly uploadInput = this.page.locator('input[type="file"]');
   readonly success = this.page.getByRole('heading', { name: /file uploaded/i });
@@ -71,7 +71,7 @@ export class UploadPage extends PracticePage {
 }
 
 // Use the sample file that ships with the demo. Its name and contents are stable.
-export class DownloadPage extends PracticePage {
+export class DownloadPage extends BasePage {
   protected readonly path = '/download';
 
   async downloadSample() {

@@ -1,4 +1,4 @@
-import { expect, test } from '../../fixtures/ui';
+import { expect, test } from '../../fixtures/expandtesting/ui';
 
 test('removes and restores an asynchronous checkbox', async ({ ui }) => {
   await ui.dynamic.goto();

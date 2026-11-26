@@ -3,17 +3,17 @@ import { test as base, expect } from './api';
 import {
   AutocompletePage, CheckboxesPage, DropdownPage, FormValidationPage,
   InputsPage, LoginPage, RadioButtonsPage,
-} from '../pages/forms';
+} from '../../pages/expandtesting/forms';
 import {
   ContextMenuPage, DialogsPage, DragAndDropPage, HoverPage, KeyboardPage, SliderPage, TooltipPage,
-} from '../pages/interactions';
+} from '../../pages/expandtesting/interactions';
 import {
   DownloadPage, FramesPage, ModalPage, ShadowDomPage, UploadPage, WindowsPage,
-} from '../pages/browser-controls';
+} from '../../pages/expandtesting/browser-controls';
 import {
   DynamicControlsPage, DynamicLoadingPage, DynamicTablePage, PaginationPage, SortableTablePage,
-} from '../pages/dynamic-content';
-import { NotesPage } from '../pages/notes-page';
+} from '../../pages/expandtesting/dynamic-content';
+import { NotesPage } from '../../pages/expandtesting/notes-page';
 
 // These names are the keys used in tests. For example, ui.login gives the test its LoginPage object.
 const pages = {
