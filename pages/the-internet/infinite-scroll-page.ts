@@ -5,12 +5,11 @@ export class InfiniteScrollPage extends BasePage {
   /** The address of this example on The Internet. */
   protected readonly path = '/infinite_scroll';
 
-  /** The blocks of content added by the scrolling example. */
-  readonly paragraphs = this.page.locator('.jscroll-added');
+  /** Blocks whose text has finished loading. The page also creates empty blocks while fetching more text. */
+  readonly paragraphs = this.page.locator('.jscroll-added:not(:has(.jscroll-loading))');
 
-  /** Move the last loaded block into view and scroll down to request more content. */
+  /** Scroll to the end of the document so the page can request another block of text. */
   async loadMore() {
-    await this.paragraphs.last().scrollIntoViewIfNeeded();
-    await this.page.mouse.wheel(0, 2500);
+    await this.page.keyboard.press('End');
   }
 }

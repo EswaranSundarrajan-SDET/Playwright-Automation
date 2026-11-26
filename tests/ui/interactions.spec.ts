@@ -88,7 +88,9 @@ test('scrolling loads another block of text', async ({ scroll }) => {
   await expect(scroll.paragraphs.first()).toBeVisible();
   /** How many blocks were on the page before scrolling. */
   const before = await scroll.paragraphs.count();
-  await scroll.loadMore();
-  // Read the block count again until the website has loaded the next block.
-  await expect.poll(() => scroll.paragraphs.count()).toBeGreaterThan(before);
+  // The page can grow while a scroll is in progress. Keep going to the end until new text arrives.
+  await expect.poll(async () => {
+    await scroll.loadMore();
+    return await scroll.paragraphs.count();
+  }).toBeGreaterThan(before);
 });

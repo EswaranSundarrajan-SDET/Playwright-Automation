@@ -13,6 +13,10 @@ export abstract class BasePage {
 
   /** Open this screen using the website address in the test settings. */
   async open() {
-    await this.page.goto(this.path, { waitUntil: 'domcontentloaded' });
+    /** The server's reply when the browser opens the page. */
+    const response = await this.page.goto(this.path, { waitUntil: 'domcontentloaded' });
+    if (response && !response.ok()) {
+      throw new Error(`Opening ${response.url()} returned HTTP ${response.status()}.`);
+    }
   }
 }

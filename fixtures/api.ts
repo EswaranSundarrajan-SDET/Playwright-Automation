@@ -17,12 +17,12 @@ interface ApiFixtures {
 
 /** The API test runner. Playwright creates only the fixtures each test requests. */
 export const test = base.extend<ApiFixtures>({
-  /** Wrap the test's request context and pass the client to the test through use. */
+  /** Pass a booking client to the test using its own request context. */
   booker: async ({ request }, use) => {
     await use(new BookingClient(request));
   },
 
-  /** Ask booker to sign in, then pass its token to the test through use. */
+  /** Sign in with the demo account and pass the returned token to the test. */
   token: async ({ booker }, use) => {
     /** The server's answer to the sign-in request. */
     const response = await booker.signIn(bookerAccount.username, bookerAccount.password);
@@ -33,12 +33,12 @@ export const test = base.extend<ApiFixtures>({
     await use(token);
   },
 
-  /** Give use a fresh guest name each time Playwright starts a test. */
+  /** Give each test its own guest details. */
   guest: async ({}, use) => {
     await use(makeBooking());
   },
 
-  /** Create a booking for use, then check that the same guest still owns it before cleanup. */
+  /** Create a booking before the test and check its owner before deleting it afterward. */
   saved: async ({ booker, guest, token }, use) => {
     /** The answer to the request that created this test's booking. */
     const response = await booker.create(guest);

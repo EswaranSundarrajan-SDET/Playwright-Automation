@@ -75,117 +75,117 @@ interface UiFixtures {
 
 /** The UI test runner. Playwright builds each requested page object when the test starts. */
 export const test = base.extend<UiFixtures>({
-  /** Give use the login page object built from the current browser page. */
+  /** Pass the login page object for the current tab to the test. */
   login: async ({ page }, use) => {
     await use(new LoginPage(page));
   },
 
-  /** Give use the form page object built from the current browser page. */
+  /** Pass the form page object for the current tab to the test. */
   form: async ({ page }, use) => {
     await use(new GuestFormPage(page));
   },
 
-  /** Give use the dynamic page object built from the current browser page. */
+  /** Pass the dynamic page object for the current tab to the test. */
   dynamic: async ({ page }, use) => {
     await use(new DynamicControlsPage(page));
   },
 
-  /** Give use the dates page object built from the current browser page. */
+  /** Pass the dates page object for the current tab to the test. */
   dates: async ({ page }, use) => {
     await use(new DatePickersPage(page));
   },
 
-  /** Give use the suggestions page object built from the current browser page. */
+  /** Pass the suggestions page object for the current tab to the test. */
   suggestions: async ({ page }, use) => {
     await use(new AutocompletePage(page));
   },
 
-  /** Give use the fruit page object built from the current browser page. */
+  /** Pass the fruit page object for the current tab to the test. */
   fruit: async ({ page }, use) => {
     await use(new CustomDropdownPage(page));
   },
 
-  /** Give use the alerts page object built from the current browser page. */
+  /** Pass the alerts page object for the current tab to the test. */
   alerts: async ({ page }, use) => {
     await use(new AlertsPage(page));
   },
 
-  /** Give use the modal page object built from the current browser page. */
+  /** Pass the modal page object for the current tab to the test. */
   modal: async ({ page }, use) => {
     await use(new ModalPage(page));
   },
 
-  /** Give use the frames page object built from the current browser page. */
+  /** Pass the frames page object for the current tab to the test. */
   frames: async ({ page }, use) => {
     await use(new NestedFramesPage(page));
   },
 
-  /** Give use the editor page object built from the current browser page. */
+  /** Pass the editor page object for the current tab to the test. */
   editor: async ({ page }, use) => {
     await use(new EditorPage(page));
   },
 
-  /** Give use the windows page object built from the current browser page. */
+  /** Pass the windows page object for the current tab to the test. */
   windows: async ({ page }, use) => {
     await use(new WindowsPage(page));
   },
 
-  /** Give use the files page object built from the current browser page. */
+  /** Pass the files page object for the current tab to the test. */
   files: async ({ page }, use) => {
     await use(new UploadPage(page));
   },
 
-  /** Give use the downloads page object built from the current browser page. */
+  /** Pass the downloads page object for the current tab to the test. */
   downloads: async ({ page }, use) => {
     await use(new DownloadPage(page));
   },
 
-  /** Give use the drag page object built from the current browser page. */
+  /** Pass the drag page object for the current tab to the test. */
   drag: async ({ page }, use) => {
     await use(new DragAndDropPage(page));
   },
 
-  /** Give use the hover page object built from the current browser page. */
+  /** Pass the hover page object for the current tab to the test. */
   hover: async ({ page }, use) => {
     await use(new HoverPage(page));
   },
 
-  /** Give use the tables page object built from the current browser page. */
+  /** Pass the tables page object for the current tab to the test. */
   tables: async ({ page }, use) => {
     await use(new TablesPage(page));
   },
 
-  /** Give use the shadow page object built from the current browser page. */
+  /** Pass the shadow page object for the current tab to the test. */
   shadow: async ({ page }, use) => {
     await use(new ShadowDomPage(page));
   },
 
-  /** Give use the canvas page object built from the current browser page. */
+  /** Pass the canvas page object for the current tab to the test. */
   canvas: async ({ page }, use) => {
     await use(new CanvasPage(page));
   },
 
-  /** Give use the chart page object built from the current browser page. */
+  /** Pass the chart page object for the current tab to the test. */
   chart: async ({ page }, use) => {
     await use(new ChartPage(page));
   },
 
-  /** Give use the context menu page object built from the current browser page. */
+  /** Pass the context menu page object for the current tab to the test. */
   contextMenu: async ({ page }, use) => {
     await use(new ContextMenuPage(page));
   },
 
-  /** Give use the elements page object built from the current browser page. */
+  /** Pass the elements page object for the current tab to the test. */
   elements: async ({ page }, use) => {
     await use(new ElementsPage(page));
   },
 
-  /** Give use the read only page object built from the current browser page. */
+  /** Pass the read only page object for the current tab to the test. */
   readOnly: async ({ page }, use) => {
     await use(new ReadOnlyPage(page));
   },
 
-  /** Give use the scroll page object built from the current browser page. */
+  /** Pass the scroll page object for the current tab to the test. */
   scroll: async ({ page }, use) => {
     await use(new InfiniteScrollPage(page));
   },
