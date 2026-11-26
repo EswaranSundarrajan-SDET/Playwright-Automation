@@ -1,13 +1,7 @@
-import type { Note, NoteDraft, Profile } from '../../src/api/notes-client';
-import { expectData, expectJson } from '../../src/api/response';
-import { expect, test } from '../../src/fixtures/api';
-
-// Use the same valid note fields as a starting point for the create and validation tests.
-const draft: NoteDraft = {
-  title: 'Plan the regression run',
-  description: 'Verify the browser and API suites.',
-  category: 'Work',
-};
+import { expect, test } from '../../fixtures/api';
+import { apiNoteDraft } from '../../test-data/notes.data';
+import type { Note, Profile } from '../../test-data/notes.types';
+import { expectData, expectJson } from '../../utils/response';
 
 test('Notes API reports a healthy service', async ({ notesApi }) => {
   // The health endpoint is public, so this test only needs the anonymous client.
@@ -38,7 +32,7 @@ test('listing notes requires an access token', async ({ notesApi }) => {
 
 test('invalid note category returns a validation error', async ({ notesAccount }) => {
   // Send a category outside the allowed list, then check for a validation error and an empty note list.
-  const response = await notesAccount.client.create({ ...draft, category: 'Invalid' });
+  const response = await notesAccount.client.create({ ...apiNoteDraft, category: 'Invalid' });
   const body = await expectJson(response, 400);
   expect(body.message).toMatch(/category/i);
   expect(await expectData<Note[]>(await notesAccount.client.list())).toEqual([]);
@@ -49,18 +43,18 @@ test('create, list, retrieve, replace, complete and delete a note', async ({ not
 
   // Give each stage a name so it is easy to locate failures in the Playwright report.
   const note = await test.step('Create and retrieve the note', async () => {
-    const created = await expectData<Note>(await client.create(draft));
-    expect(created).toMatchObject({ ...draft, id: expect.any(String), completed: false });
+    const created = await expectData<Note>(await client.create(apiNoteDraft));
+    expect(created).toMatchObject({ ...apiNoteDraft, id: expect.any(String), completed: false });
 
     // Check that the new note can be found in the list and by its own ID.
     const allNotes = await expectData<Note[]>(await client.list());
-    expect(allNotes).toEqual([expect.objectContaining({ id: created.id, ...draft })]);
+    expect(allNotes).toEqual([expect.objectContaining({ id: created.id, ...apiNoteDraft })]);
     expect(await expectData<Note>(await client.get(created.id))).toMatchObject(created);
     return created;
   });
 
   await test.step('Replace the note and patch its completion status', async () => {
-    const update = { ...draft, title: 'Review the regression run', completed: false };
+    const update = { ...apiNoteDraft, title: 'Review the regression run', completed: false };
     const replaced = await expectData<Note>(await client.replace(note.id, update));
     expect(replaced).toMatchObject({ ...update, id: note.id });
 

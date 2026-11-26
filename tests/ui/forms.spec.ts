@@ -1,9 +1,9 @@
-import { expect, test } from '../../src/fixtures/ui';
+import { expect, test } from '../../fixtures/ui';
+import { practiceInputs, practiceLogin } from '../../test-data/forms.data';
 
 test('valid credentials open the secure area and logout returns to login', async ({ page, ui }) => {
   await ui.login.goto();
-  // The practice site provides these demo credentials.
-  await ui.login.login('practice', 'SuperSecretPassword!');
+  await ui.login.login(practiceLogin.username, practiceLogin.password);
   await expect(page).toHaveURL(/\/secure\/?$/);
   await expect(ui.login.logoutLink).toBeVisible();
 
@@ -15,30 +15,24 @@ test('valid credentials open the secure area and logout returns to login', async
 test('an incorrect password shows the login error', async ({ page, ui }) => {
   await ui.login.goto();
   // Keep the username valid so this test checks the password error.
-  await ui.login.login('practice', 'incorrect');
+  await ui.login.login(practiceLogin.username, practiceLogin.invalidPassword);
   await expect(page).toHaveURL(/\/login\/?$/);
   await expect(ui.login.error).toBeVisible();
 });
 
 test('text, password, number and date inputs display and clear values', async ({ ui }) => {
-  const values = {
-    number: '42',
-    text: 'Playwright',
-    password: 'Sample123!',
-    date: '2030-06-15',
-  };
   await ui.inputs.goto();
-  await ui.inputs.enter(values);
+  await ui.inputs.enter(practiceInputs);
   // Check that the browser treats this field as a password input.
   await expect(ui.inputs.password).toHaveAttribute('type', 'password');
-  await expect(ui.inputs.date).toHaveValue(values.date);
+  await expect(ui.inputs.date).toHaveValue(practiceInputs.date);
 
   // Compare the values the page displays with the values sent to the inputs.
   await ui.inputs.display();
-  await expect(ui.inputs.output('number')).toHaveText(values.number);
-  await expect(ui.inputs.output('text')).toHaveText(values.text);
-  await expect(ui.inputs.output('password')).toHaveText(values.password);
-  await expect(ui.inputs.output('date')).toHaveText(values.date);
+  await expect(ui.inputs.output('number')).toHaveText(practiceInputs.number);
+  await expect(ui.inputs.output('text')).toHaveText(practiceInputs.text);
+  await expect(ui.inputs.output('password')).toHaveText(practiceInputs.password);
+  await expect(ui.inputs.output('date')).toHaveText(practiceInputs.date);
 
   // Check every input after Clear Inputs because each control has its own value.
   await ui.inputs.clear();

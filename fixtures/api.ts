@@ -1,8 +1,9 @@
-import { randomUUID } from 'node:crypto';
 import { test as base, expect } from '@playwright/test';
-import { NotesClient, type Account, type Session } from '../api/notes-client';
-import { expectData, expectJson } from '../api/response';
-import { apiBaseURL } from '../targets';
+import { NotesClient } from '../api/notes-client';
+import { apiBaseURL } from '../config/environment';
+import { createDemoAccount } from '../test-data/notes.data';
+import type { Account, Session } from '../test-data/notes.types';
+import { expectData, expectJson } from '../utils/response';
 
 // The test gets the account details, the login response, and a client that can send the token.
 type NotesAccount = {
@@ -31,15 +32,7 @@ export const test = base.extend<{ notesApi: NotesClient; notesAccount: NotesAcco
   },
   // This fixture depends on notesApi. It creates and signs in a new demo user for the test.
   notesAccount: async ({ notesApi }, use) => {
-    // Use a short random ID to stay within the demo's field limits and avoid sharing accounts across
-    // parallel tests.
-    const id = randomUUID().replaceAll('-', '').slice(0, 20);
-    const account: Account = {
-      name: 'Playwright QA',
-      email: `pw-${id}@example.com`,
-      password: `Pw!-${id}`,
-    };
-
+    const account = createDemoAccount();
     await expectJson(await notesApi.register(account), 201);
     const session = await expectData<Session>(await notesApi.login(account));
     expect(session.token).toMatch(/\S/);

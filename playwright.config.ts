@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { uiBaseURL } from './src/targets';
+import { uiBaseURL } from './config/environment';
 
 // GitHub Actions sets CI. Use it to choose the runner settings and report format.
 const ci = Boolean(process.env.CI);

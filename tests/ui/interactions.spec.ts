@@ -1,4 +1,4 @@
-import { expect, test } from '../../src/fixtures/ui';
+import { expect, test } from '../../fixtures/ui';
 
 test('the range slider responds to keyboard input', async ({ ui }) => {
   await ui.slider.goto();

@@ -1,3 +1,4 @@
+import type { InputValues } from '../test-data/forms.data';
 import { PracticePage } from './practice-page';
 
 // The practice login page has fields for both successful and unsuccessful sign-in tests.
@@ -19,8 +20,6 @@ export class LoginPage extends PracticePage {
     await this.logoutLink.click();
   }
 }
-
-type InputValues = { number: string; text: string; password: string; date: string };
 
 // The input page has number, text, password, and date fields with a separate area for displayed values.
 export class InputsPage extends PracticePage {

@@ -1,14 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
-
-// These types describe the data sent to and returned by the Notes API.
-export type Credentials = { email: string; password: string };
-export type Account = Credentials & { name: string };
-export type Category = 'Home' | 'Work' | 'Personal';
-// A draft contains the fields entered by the user. The server adds the ID and completion state.
-export type NoteDraft = { title: string; description: string; category: Category };
-export type Note = NoteDraft & { id: string; completed: boolean };
-export type Profile = { id: string; name: string; email: string };
-export type Session = Profile & { token: string };
+import type { Account, Credentials, NoteDraft } from '../test-data/notes.types';
 
 // Keep the Notes API paths and request details in one place. Tests receive the response and check it
 // themselves.

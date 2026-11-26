@@ -38,22 +38,28 @@ Install just Chromium with `npx playwright install chromium` when running only t
 | Notes API | Health, registration, login, authenticated profile, invalid credentials, missing token, invalid category, create/list/read/replace/complete/delete |
 | Hybrid UI and API | API data setup, browser login and creation, API verification |
 
-## Structure
+## Framework structure
+
+The repository root is the Playwright framework folder.
 
 | Location | Responsibility |
 | --- | --- |
-| `src/pages/` | Page-level locators and user actions |
-| `src/fixtures/` | Test-scoped page objects, request contexts, and disposable demo accounts |
-| `src/api/` | Notes service client, types, and response assertions |
-| `tests/ui/` | User-visible control tests and the hybrid scenario |
-| `tests/api/` | Browser-free HTTP and data assertions |
+| `tests/` | UI, API, and hybrid test specifications |
+| `pages/` | Page Object classes that find controls and perform actions |
+| `fixtures/` | Custom fixtures that set up pages, request clients, and demo accounts |
+| `utils/` | Shared helpers for browser dialogs and API response checks |
+| `test-data/` | Demo inputs, Notes payloads, and TypeScript interfaces |
+| `api/` | Notes API client and request methods |
+| `config/` | Environment settings for the UI and API addresses |
+| `playwright.config.ts` | Test projects, parallel execution, timeouts, and reports |
+| `package.json` | Dependencies and commands for running the framework |
 | `.github/workflows/playwright.yml` | Type check, parallel test jobs, and report publishing |
 
 Each UI test gets a fresh browser context. The UI fixture blocks third-party ad requests so ad overlays do not intercept the demo controls. Tests that write Notes data register a unique account and delete it during fixture teardown. Upload names are unique, and downloads use a test-specific output path. Web-first assertions wait for state changes without fixed sleeps.
 
 ## Reading a test
 
-- For a UI example, open `tests/ui/forms.spec.ts` and follow `ui.login` to `src/pages/forms.ts`. The page object finds controls and performs actions. The spec checks what happened.
+- For a UI example, open `tests/ui/forms.spec.ts` and follow `ui.login` to `pages/forms.ts`. The page object finds controls and performs actions. The spec checks what happened.
 - For an API example, open `tests/api/notes.spec.ts`. The `notesApi` fixture opens an HTTP request context. The `notesAccount` fixture builds on that client to register and sign in a demo user, then tries to delete the user after the test.
 - For a test that uses both, open `tests/ui/notes.spec.ts`. It uses the same demo user for API requests and browser actions, so it can check the data in both places.
 

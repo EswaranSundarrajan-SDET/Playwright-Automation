@@ -1,4 +1,4 @@
-import type { Credentials, NoteDraft } from '../api/notes-client';
+import type { Credentials, NoteDraft } from '../test-data/notes.types';
 import { PracticePage } from './practice-page';
 
 // The Notes app has its own login and note creation form. The hybrid spec uses this page object.
